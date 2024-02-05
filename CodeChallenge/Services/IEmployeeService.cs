@@ -12,7 +12,7 @@ namespace CodeChallenge.Services
         Employee Create(Employee employee);
         Employee Replace(Employee originalEmployee, Employee newEmployee);
         ReportingStructure GetReportingStructureById(Employee parentEmployee, string id);
-        List<Compensation> GetCompensationByEmployeeId(string id);
+        Compensation GetCompensationByEmployeeId(string id);
         Compensation CreateCompensation(Compensation compensation);
     }
 }

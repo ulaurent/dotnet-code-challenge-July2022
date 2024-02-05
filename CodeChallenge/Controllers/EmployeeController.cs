@@ -78,6 +78,12 @@ namespace CodeChallenge.Controllers
             return Ok(employeeReportingStructure);
         }
 
+        /// <summary>
+        /// Create compensation 
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="compensation"></param>
+        /// <returns></returns>
         [HttpPost("{id}/compensation", Name = "createCompensation")]
         public IActionResult CreateCompensation(string Id, [FromBody] Compensation compensation)
         {
@@ -97,13 +103,20 @@ namespace CodeChallenge.Controllers
             }
 
             compensation.EmployeeId = Id;
+            compensation.Employee = null;
 
             // Create a new compensation to our db context
             _employeeService.CreateCompensation(compensation);
 
-            return CreatedAtRoute("getCompByEmployeeId", new { id = compensation.CompensationId }, compensation);
+            return Ok(compensation);
         }
 
+        /// <summary>
+        /// Gets latest record of compensation for employee
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="getLatestCompensation"></param>
+        /// <returns></returns>
         [HttpGet("{id}/compensation", Name = "getCompensationById")]
         public IActionResult GetCompensationById(String id, bool getLatestCompensation)
         {

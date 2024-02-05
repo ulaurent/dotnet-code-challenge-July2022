@@ -46,17 +46,6 @@ namespace CodeChallenge.Repositories
             return _employeeContext.Employees.ToList().SingleOrDefault(e => e.EmployeeId == id);
         }
 
-        /// <summary>
-        /// Get compensation based on employee id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Compensation GetCompensationByEmployeeId(string id)
-        {
-            return _employeeContext.Compensations.Include(c => c.Employee).SingleOrDefault(c => c.Employee.EmployeeId == id);
-        }
-
-
         public Task SaveAsync()
         {
             return _employeeContext.SaveChangesAsync();
@@ -67,9 +56,34 @@ namespace CodeChallenge.Repositories
             return _employeeContext.Remove(employee).Entity;
         }
 
-        public List<Compensation> GetCompensationListByEmployeeId(string id)
+        /// <summary>
+        /// Get list of compensation based on employee id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Compensation GetCompensationListByEmployeeId(string id)
         {
-            return _employeeContext.Compensations.Where(c => c.Employee.EmployeeId == id).ToList();
+            var item = (from ai in _employeeContext.Compensations
+                        join al in _employeeContext.Employees on ai.EmployeeId equals al.EmployeeId
+                        where (ai.EmployeeId == id)
+                        select new Compensation
+                        {
+                            EmployeeId = ai.EmployeeId,
+                            CompensationId = ai.CompensationId,
+                            Salary = ai.Salary,
+                            EffectiveDate = ai.EffectiveDate,
+                            Employee = new Employee
+                            {
+                                EmployeeId = ai.EmployeeId,
+                                FirstName = al.FirstName,
+                                LastName = al.LastName,
+                                Position = al.Position,
+                                Department = al.Department,
+                                DirectReports = al.DirectReports
+                            }
+                        }).OrderByDescending(x => x.EffectiveDate).FirstOrDefaultAsync();
+            
+            return item.Result;
         }
     }
 }

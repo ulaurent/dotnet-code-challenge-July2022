@@ -54,7 +54,7 @@ namespace CodeChallenge.Services
             return null;
         }
 
-        public List<Compensation> GetCompensationByEmployeeId(string id)
+        public Compensation GetCompensationByEmployeeId(string id)
         {
             if (!String.IsNullOrEmpty(id))
             {
